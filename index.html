@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Una cita para Abril 🐱</title>
+<style>
+  /* ====== DATOS EDITABLES ======
+     Cambiá estos valores si hace falta. El número de WhatsApp va sin
+     signos ni espacios, con código de país (Argentina = 54, celular = 9). */
+  :root{
+    --rosa:#ff9ec4;
+    --rosa-suave:#ffd9e6;
+    --crema:#fff6fb;
+    --texto:#5b3a4d;
+    --sombra:0 12px 30px rgba(214,110,150,.25);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow-x:hidden}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    color:var(--texto);
+    background:
+      radial-gradient(circle at 20% 20%, #ffe3ef 0, transparent 45%),
+      radial-gradient(circle at 80% 0%, #ffeef6 0, transparent 40%),
+      linear-gradient(160deg,#ffddeb,#fff2f8 60%,#ffe8f3);
+    background-attachment:fixed;
+    min-height:100vh;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:calc(24px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* huellitas de fondo */
+  body::before{
+    content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+    position:fixed;
+    inset:0;
+    font-size:26px;
+    line-height:120px;
+    letter-spacing:60px;
+    opacity:.12;
+    pointer-events:none;
+    overflow:hidden;
+    transform:rotate(-12deg) scale(1.4);
+  }
+
+  .tarjeta{
+    position:relative;
+    width:100%;
+    max-width:420px;
+    background:var(--crema);
+    border-radius:28px;
+    padding:34px 28px 30px;
+    box-shadow:var(--sombra);
+    text-align:center;
+    z-index:1;
+  }
+
+  /* orejitas de gato: mismo color que la tarjeta, se ven como bultitos */
+  .orejas span{
+    position:absolute;
+    bottom:100%;
+    margin-bottom:-16px;
+    width:0;height:0;
+    border-left:26px solid transparent;
+    border-right:26px solid transparent;
+    border-bottom:40px solid var(--crema);
+  }
+  .orejas span:first-child{left:22%}
+  .orejas span:last-child{right:22%}
+  .orejas span::after{
+    content:"";
+    position:absolute;
+    left:-12px;
+    top:16px;
+    width:0;height:0;
+    border-left:12px solid transparent;
+    border-right:12px solid transparent;
+    border-bottom:18px solid var(--rosa-suave);
+  }
+
+  .gato{font-size:64px;line-height:1;margin:6px 0 2px}
+  h1{font-size:1.6rem;margin:.2em 0 .1em}
+  .sub{margin:0 0 18px;font-size:1rem;opacity:.8}
+
+  .datos{
+    background:var(--rosa-suave);
+    border-radius:18px;
+    padding:16px 18px;
+    margin:14px 0 20px;
+    text-align:left;
+    font-size:1rem;
+  }
+  .datos div{display:flex;gap:10px;align-items:center;margin:6px 0}
+  .datos .ico{font-size:1.2rem}
+
+  .pregunta{font-weight:700;font-size:1.15rem;margin:6px 0 14px}
+
+  .botones{display:flex;flex-direction:column;gap:12px}
+  button{
+    font:inherit;
+    font-weight:700;
+    border:none;
+    border-radius:16px;
+    padding:14px 18px;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  button:active{transform:scale(.97)}
+  .si{
+    background:var(--rosa);
+    color:#fff;
+    box-shadow:0 8px 18px rgba(255,110,160,.45);
+  }
+  .si:hover{transform:translateY(-2px)}
+  .no{
+    background:#fff;
+    color:var(--texto);
+    border:2px dashed var(--rosa);
+  }
+
+  .mensaje{
+    width:100%;
+    margin-top:6px;
+    border:2px solid var(--rosa-suave);
+    border-radius:14px;
+    padding:10px 12px;
+    font:inherit;
+    resize:vertical;
+    min-height:60px;
+    background:#fff;
+    color:var(--texto);
+  }
+  .campo-label{display:block;text-align:left;font-size:.9rem;margin:4px 2px;opacity:.75}
+
+  .pie{margin-top:16px;font-size:.8rem;opacity:.6}
+
+  /* ===== popup ===== */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(91,58,77,.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:10;
+    -webkit-backdrop-filter:blur(2px);
+    backdrop-filter:blur(2px);
+  }
+  .overlay.activo{display:flex}
+  .popup{
+    background:var(--crema);
+    border-radius:24px;
+    padding:28px 24px;
+    max-width:340px;
+    width:100%;
+    text-align:center;
+    box-shadow:var(--sombra);
+    animation:aparecer .2s ease;
+  }
+  @keyframes aparecer{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  .popup .gato{font-size:52px}
+  .popup p{font-size:1.05rem;margin:10px 0 20px}
+  .popup .si{width:100%}
+  .cerrar{
+    background:none;
+    border:none;
+    color:var(--texto);
+    opacity:.6;
+    font-size:.85rem;
+    margin-top:10px;
+    text-decoration:underline;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+  <div class="tarjeta">
+    <div class="orejas"><span></span><span></span></div>
+
+    <div class="gato">🐱</div>
+    <h1>Hola, Abril</h1>
+    <p class="sub">Tengo algo que preguntarte...</p>
+
+    <div class="datos">
+      <div><span class="ico">📍</span><span><strong>Lugar:</strong> Indie Café, Ciudadela</span></div>
+      <div><span class="ico">📅</span><span><strong>Fecha:</strong> 9 de septiembre</span></div>
+      <div><span class="ico">🕕</span><span><strong>Hora:</strong> 18:00 (o cuando puedas)</span></div>
+    </div>
+
+    <p class="pregunta">¿Quisieras tener una cita conmigo? 😺</p>
+
+    <label class="campo-label" for="mensaje">Dejá un mensajito (opcional):</label>
+    <textarea id="mensaje" class="mensaje" placeholder="Escribí algo lindo..."></textarea>
+
+    <div class="botones" style="margin-top:14px">
+      <button class="si" onclick="decirSi()">💖 Sí, quiero</button>
+      <button class="no" onclick="abrirPopup()">🙈 No quiero</button>
+    </div>
+
+    <p class="pie">Hecho con gatitos y nervios 🐾</p>
+  </div>
+
+  <!-- popup para "No quiero" -->
+  <div class="overlay" id="overlay">
+    <div class="popup">
+      <div class="gato">🥺</div>
+      <p>Lo siento, capaz quisiste apretar <strong>"Sí, quiero"</strong>.</p>
+      <button class="si" onclick="decirSi()">Dale, sí quiero 🐾</button>
+      <br>
+      <button class="cerrar" onclick="cerrarPopup()">no, en serio no quiero</button>
+    </div>
+  </div>
+
+<script>
+  // ==== CONFIG ====
+  const WHATSAPP = "5491123954345"; // +54 9 11 2395 4345 -> solo dígitos
+
+  function abrirPopup(){
+    document.getElementById("overlay").classList.add("activo");
+  }
+  function cerrarPopup(){
+    document.getElementById("overlay").classList.remove("activo");
+  }
+
+  function decirSi(){
+    const extra = document.getElementById("mensaje").value.trim();
+    let texto =
+      "¡Hola! 🐱 SÍ QUIERO tener una cita con vos.\n" +
+      "📍 Lugar: Indie Café, Ciudadela\n" +
+      "📅 Fecha: 9 de septiembre\n" +
+      "🕕 Hora: 18:00 (o cuando puedas)";
+    if (extra) texto += "\n\n💌 Mensajito: " + extra;
+
+    const url = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(texto);
+    // en el celular a veces se bloquea window.open: si pasa, navegamos directo
+    const win = window.open(url, "_blank");
+    if (!win) window.location.href = url;
+  }
+</script>
+
+</body>
+</html>
